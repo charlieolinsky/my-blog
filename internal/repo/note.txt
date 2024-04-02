@@ -1,0 +1,8 @@
+/repo
+
+provides a clean abstraction over your database interactions.
+used to implement the interfaces defined in /model containing the logic for crud in db. 
+
+Ex:
+-Functions that add a new post or comment to the database
+-Functions to fetch posts or comments

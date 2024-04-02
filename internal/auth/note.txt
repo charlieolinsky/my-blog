@@ -1,0 +1,8 @@
+/auth
+
+Everything related to authentication and authorization.
+
+Ex:
+-Storing and verifying credentials.
+-Handling login sessions or token generation and validation.
+-Middleware functions for securing endpoints that require the user to be authenticated, ensuring only admin can create projects and posts.

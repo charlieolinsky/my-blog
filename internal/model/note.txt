@@ -1,0 +1,7 @@
+/model
+
+Defines the data structures that represent the application entities.
+Define interfaces that describe the operations we can perform on these models. (implement in repo)
+
+Ex:
+- A Post struct could represent blog posts, including fields like ID, Title, Content, CreatedAt, etc.

@@ -1,0 +1,8 @@
+/sqlite
+
+Abstract the specifics of interacting with sqlite. 
+
+Ex:
+-Opening a connection to the database.
+-Executing SQL queries.
+-Handling migrations to ensure your database schema is up-to-date.
