@@ -28,3 +28,6 @@ go.work
 
 ### Secrets ###
 .env
+
+### General ###
+.vscode
