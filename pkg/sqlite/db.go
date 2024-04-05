@@ -99,6 +99,5 @@ func createTables(db *sql.DB) error {
 		return err
 	}
 
-
 	return nil
 }

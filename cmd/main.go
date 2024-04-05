@@ -15,7 +15,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func main(){
+func main() {
 	//Load vars from .env into the application environment
 	err := godotenv.Load()
 	if err != nil {
