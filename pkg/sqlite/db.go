@@ -38,7 +38,7 @@ func createTables(db *sql.DB) error {
 
 	//Create users table
 	_, err := db.Exec(
-	`CREATE TABLE users (
+	`CREATE TABLE IF NOT EXISTS users (
 	user_id INTEGER PRIMARY KEY,
   	role TEXT NOT NULL,
   	email TEXT UNIQUE NOT NULL,
@@ -48,10 +48,57 @@ func createTables(db *sql.DB) error {
   	profilePictureUrl TEXT,
   	created_at TEXT NOT NULL,
   	updated_at TEXT);`)
-	
 	if err != nil {
 		return err
 	}
+
+	//Create projects table
+	_, err = db.Exec(
+	`CREATE TABLE IF NOT EXISTS projects (
+  	project_id INTEGER PRIMARY KEY,
+  	user_id INTEGER NOT NULL,
+  	title TEXT NOT NULL,
+  	body TEXT NOT NULL,
+  	created_at TEXT NOT NULL,
+  	updated_at TEXT,
+  	FOREIGN KEY (user_id) REFERENCES users (user_id));`)
+	if err != nil {
+		return err
+	}
+
+	//Create posts table
+	_, err = db.Exec(`
+	CREATE TABLE IF NOT EXISTS posts (
+  	post_id INTEGER PRIMARY KEY,
+  	user_id INTEGER NOT NULL,
+  	project_id INTEGER NOT NULL,
+  	title TEXT NOT NULL,
+  	body TEXT NOT NULL,
+  	likes INTEGER DEFAULT 0,
+  	created_at TEXT NOT NULL,
+  	updated_at TEXT,
+  	FOREIGN KEY (user_id) REFERENCES users (user_id),
+  	FOREIGN KEY (project_id) REFERENCES projects (project_id));`)
+	if err != nil {
+		return err
+	}
+
+	//Create comments table
+	_, err = db.Exec(`
+	CREATE TABLE IF NOT EXISTS comments (
+  	comment_id INTEGER PRIMARY KEY,
+  	user_id INTEGER NOT NULL,
+  	post_id INTEGER NOT NULL,
+  	body TEXT NOT NULL,
+  	likes INTEGER DEFAULT 0,
+  	created_at TEXT NOT NULL,
+  	updated_at TEXT,
+  	FOREIGN KEY (user_id) REFERENCES users (user_id),
+  	FOREIGN KEY (post_id) REFERENCES posts (post_id));`)
+	if err != nil {
+		return err
+	}
+
 
 	return nil
 }

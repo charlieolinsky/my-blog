@@ -8,6 +8,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/charlieolinsky/my-blog/pkg/sqlite"
 	"github.com/joho/godotenv"
@@ -21,10 +22,14 @@ func main(){
 		log.Fatalf("Error Loading .env file -- %v", err)
 	}
 
-	db, err := sqlite.InitDataBase("./data/myblog.db")
+	//Get db file path from env
+	dbPath := os.Getenv("DB_PATH")
+
+	//Initialize Database
+	db, err := sqlite.InitDataBase(dbPath)
 	if err != nil {
 		log.Fatalf("Error Initializing Database -- %v", err)
 	}
-	defer db.Close()
+	defer db.Close() //Close when main() finishes execution
 
 }
