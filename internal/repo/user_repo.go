@@ -21,6 +21,7 @@ type UserRepository interface {
 	CreateUser(ctx context.Context, user User) error
 
 	//Read/Get User
+	GetUser(ctx context.Context, UserID int) (*User, error)
 
 	//Update User
 
