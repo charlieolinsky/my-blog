@@ -42,8 +42,8 @@ func main() {
 
 	newUser := repo.User{
 		Role:              "admin",
-		Email:             "newuser@blog.com",
-		Password:          "hey123",
+		Email:             "newuser4@blog.com",
+		Password:          "hey123456",
 		FirstName:         "Charles",
 		LastName:          "Olinsky",
 		ProfilePictureUrl: "",
@@ -53,15 +53,31 @@ func main() {
 
 	err = userRepo.CreateUser(context.Background(), newUser)
 	if err != nil {
-		log.Fatalf("DAL Failed to Create User -- %v", err)
+		log.Fatalf("DAL Failed to Create User -- %v\n", err)
 	}
 
 	//Get User
 	user, err := userRepo.GetUser(context.Background(), 1)
 	if err != nil {
-		log.Fatalf("DAL Failed to Get User -- %v", err)
+		log.Fatalf("DAL Failed to Get User -- %v\n", err)
 	} else {
-		fmt.Printf("Got User: %s%s%s", user.FirstName, " ", user.LastName)
+		fmt.Printf("Got User: %s%s%s\n", user.FirstName, " ", user.LastName)
+	}
+
+	//Update User
+	updatedUser := repo.User{
+		Role:              "general",
+		Email:             "newuser26@blog.com",
+		Password:          "hey1233",
+		FirstName:         "Charles",
+		LastName:          "Olinsky",
+		ProfilePictureUrl: "",
+		CreatedAt:         "",
+		UpdatedAt:         "",
+	}
+	err = userRepo.UpdateUser(context.Background(), 2, updatedUser)
+	if err != nil {
+		log.Fatalf("DAL failed to Update User -- %v", err)
 	}
 
 }

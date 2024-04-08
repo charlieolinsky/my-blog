@@ -13,11 +13,11 @@ func InitDataBase(dbPath string) (*sql.DB, error) {
 		return nil, err
 	}
 
-	//Ensure secure db connection using dummy query 
+	//Ensure secure db connection using dummy query
 	err = db.Ping()
 	if err != nil {
 		return nil, err
-	} 
+	}
 
 	//Enable Foreign Key Support
 	_, err = db.Exec("PRAGMA foreign_keys = ON")
@@ -38,7 +38,7 @@ func createTables(db *sql.DB) error {
 
 	//Create users table
 	_, err := db.Exec(
-	`CREATE TABLE IF NOT EXISTS users (
+		`CREATE TABLE IF NOT EXISTS users (
 	user_id INTEGER PRIMARY KEY,
   	role TEXT NOT NULL,
   	email TEXT UNIQUE NOT NULL,
@@ -54,7 +54,7 @@ func createTables(db *sql.DB) error {
 
 	//Create projects table
 	_, err = db.Exec(
-	`CREATE TABLE IF NOT EXISTS projects (
+		`CREATE TABLE IF NOT EXISTS projects (
   	project_id INTEGER PRIMARY KEY,
   	user_id INTEGER NOT NULL,
   	title TEXT NOT NULL,
