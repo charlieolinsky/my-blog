@@ -65,3 +65,25 @@ func (r *userRepository) UpdateUser(ctx context.Context, UserID int, newUser Use
 
 	return nil
 }
+
+func (r *userRepository) DeleteUser(ctx context.Context, UserID int) error {
+	query := "DELETE FROM users WHERE user_id=?"
+	res, err := r.db.ExecContext(ctx, query, UserID)
+
+	//Handle SQL Execution Errors
+	if err != nil {
+		return err
+	}
+	//Handle potential errors when checking for rows affected
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	//Handle case where no rows are updated
+	if rowsAffected == 0 {
+		return fmt.Errorf("DeleteUser Error: No user found with ID: %d", UserID)
+	}
+
+	return nil
+
+}

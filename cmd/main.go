@@ -29,32 +29,32 @@ func main() {
 	dbPath := os.Getenv("DB_PATH")
 
 	//Initialize Database
-	db, err := sqlite.InitDataBase(dbPath + "test.db")
+	db, err := sqlite.InitDatabase(dbPath + "test.db")
 	if err != nil {
 		log.Fatalf("Error Initializing Database -- %v", err)
 	}
 	defer db.Close() //Close when main() finishes execution
 
 	/* DAL TESTS */
-
-	//Create User
 	userRepo := repo.NewUserRepository(db)
 
-	newUser := repo.User{
-		Role:              "admin",
-		Email:             "newuser4@blog.com",
-		Password:          "hey123456",
-		FirstName:         "Charles",
-		LastName:          "Olinsky",
-		ProfilePictureUrl: "",
-		CreatedAt:         "now",
-		UpdatedAt:         "now",
-	}
+	//Create User
 
-	err = userRepo.CreateUser(context.Background(), newUser)
-	if err != nil {
-		log.Fatalf("DAL Failed to Create User -- %v\n", err)
-	}
+	// newUser := repo.User{
+	// 	Role:              "admin",
+	// 	Email:             "newuser4@blog.com",
+	// 	Password:          "hey123456",
+	// 	FirstName:         "Charles",
+	// 	LastName:          "Olinsky",
+	// 	ProfilePictureUrl: "",
+	// 	CreatedAt:         "now",
+	// 	UpdatedAt:         "now",
+	// }
+
+	// err = userRepo.CreateUser(context.Background(), newUser)
+	// if err != nil {
+	// 	log.Fatalf("DAL Failed to Create User -- %v\n", err)
+	// }
 
 	//Get User
 	user, err := userRepo.GetUser(context.Background(), 1)
@@ -78,6 +78,12 @@ func main() {
 	err = userRepo.UpdateUser(context.Background(), 2, updatedUser)
 	if err != nil {
 		log.Fatalf("DAL failed to Update User -- %v", err)
+	}
+
+	//Delete User
+	err = userRepo.DeleteUser(context.Background(), 3)
+	if err != nil {
+		log.Fatalf("DAL Failed to Delete User -- %v\n", err)
 	}
 
 }
