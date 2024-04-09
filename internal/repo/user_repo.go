@@ -1,6 +1,9 @@
 package repo
 
-import "context"
+import (
+	"context"
+	"time"
+)
 
 type User struct {
 	UserID            int
@@ -10,11 +13,12 @@ type User struct {
 	FirstName         string
 	LastName          string
 	ProfilePictureUrl string
-	CreatedAt         string
-	UpdatedAt         string
+	CreatedAt         *time.Time
+	UpdatedAt         *time.Time
+	DeletedAt         *time.Time
 }
 
-//Define all methods related to users
+// Define all methods related to users
 type UserRepository interface {
 
 	//Create User

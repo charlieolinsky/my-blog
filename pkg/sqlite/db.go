@@ -62,6 +62,7 @@ func createTables(db *sql.DB) error {
   	body TEXT NOT NULL,
   	created_at TEXT NOT NULL,
   	updated_at TEXT,
+	deleted_at TEXT,
   	FOREIGN KEY (user_id) REFERENCES users (user_id));`)
 	if err != nil {
 		return err
@@ -78,6 +79,7 @@ func createTables(db *sql.DB) error {
   	likes INTEGER DEFAULT 0,
   	created_at TEXT NOT NULL,
   	updated_at TEXT,
+	deleted_at TEXT,
   	FOREIGN KEY (user_id) REFERENCES users (user_id),
   	FOREIGN KEY (project_id) REFERENCES projects (project_id));`)
 	if err != nil {
@@ -94,6 +96,7 @@ func createTables(db *sql.DB) error {
   	likes INTEGER DEFAULT 0,
   	created_at TEXT NOT NULL,
   	updated_at TEXT,
+	deleted_at TEXT,
   	FOREIGN KEY (user_id) REFERENCES users (user_id),
   	FOREIGN KEY (post_id) REFERENCES posts (post_id));`)
 	if err != nil {
