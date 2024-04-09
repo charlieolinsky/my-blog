@@ -67,8 +67,10 @@ func (r *userRepository) UpdateUser(ctx context.Context, UserID int, newUser Use
 }
 
 func (r *userRepository) DeleteUser(ctx context.Context, UserID int) error {
-	query := "DELETE FROM users WHERE user_id=?"
-	res, err := r.db.ExecContext(ctx, query, UserID)
+	timeNow := time.Now().UTC()
+
+	query := "UPDATE users SET deleted_at=? WHERE user_id=?"
+	res, err := r.db.ExecContext(ctx, query, timeNow, UserID)
 
 	//Handle SQL Execution Errors
 	if err != nil {

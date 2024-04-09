@@ -47,7 +47,8 @@ func createTables(db *sql.DB) error {
   	last_name TEXT NOT NULL,
   	profilePictureUrl TEXT,
   	created_at TEXT NOT NULL,
-  	updated_at TEXT);`)
+  	updated_at TEXT,
+	deleted_at TEXT);`)
 	if err != nil {
 		return err
 	}
