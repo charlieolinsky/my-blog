@@ -10,7 +10,7 @@ type Project struct {
 	UserId    int
 	Title     string
 	Body      string
-	CreatedAt *time.Time
+	CreatedAt time.Time
 	UpdatedAt *time.Time
 	DeletedAt *time.Time
 }

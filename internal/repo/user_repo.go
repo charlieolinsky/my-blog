@@ -13,7 +13,7 @@ type User struct {
 	FirstName         string
 	LastName          string
 	ProfilePictureUrl string
-	CreatedAt         *time.Time
+	CreatedAt         time.Time
 	UpdatedAt         *time.Time
 	DeletedAt         *time.Time
 }
