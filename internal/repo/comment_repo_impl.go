@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"fmt"
 	"time"
+
+	"github.com/charlieolinsky/my-blog/internal/model"
 )
 
 type commentRepository struct {
@@ -16,15 +18,15 @@ func NewCommentRepository(db *sql.DB) CommentRepository {
 }
 
 // CreateComment inserts a new comment into the database.
-func (r *commentRepository) CreateComment(ctx context.Context, newComment Comment) error {
+func (r *commentRepository) CreateComment(ctx context.Context, newComment model.Comment) error {
 	query := "INSERT INTO comments (user_id, post_id, body, likes, created_at, updated_at, deleted_at) VALUES (?, ?, ?, ?, ?, NULL, NULL)"
 	_, err := r.db.ExecContext(ctx, query, newComment.UserID, newComment.PostID, newComment.Body, newComment.Likes, time.Now().UTC())
 	return err
 }
 
 // GetComment retrieves a comment by its ID, including soft-deleted comments.
-func (r *commentRepository) GetComment(ctx context.Context, CommentID int) (*Comment, error) {
-	var comment Comment
+func (r *commentRepository) GetComment(ctx context.Context, CommentID int) (*model.Comment, error) {
+	var comment model.Comment
 	query := "SELECT comment_id, user_id, post_id, body, likes, created_at, updated_at FROM comments WHERE comment_id=?"
 	err := r.db.QueryRowContext(ctx, query, CommentID).Scan(&comment.CommentID, &comment.UserID, &comment.PostID, &comment.Body, &comment.Likes, &comment.CreatedAt, &comment.UpdatedAt)
 
@@ -38,7 +40,7 @@ func (r *commentRepository) GetComment(ctx context.Context, CommentID int) (*Com
 }
 
 // UpdateComment modifies an existing comment's details. Deleted comments may not be updated.
-func (r *commentRepository) UpdateComment(ctx context.Context, CommentID int, updatedComment Comment) error {
+func (r *commentRepository) UpdateComment(ctx context.Context, CommentID int, updatedComment model.Comment) error {
 	query := "UPDATE comments SET body=?, likes=?, updated_at=? WHERE comment_id=? AND deleted_at IS NULL"
 	_, err := r.db.ExecContext(ctx, query, updatedComment.Body, updatedComment.Likes, time.Now().UTC(), CommentID)
 

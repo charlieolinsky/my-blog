@@ -2,24 +2,13 @@ package repo
 
 import (
 	"context"
-	"time"
+
+	"github.com/charlieolinsky/my-blog/internal/model"
 )
 
-type Comment struct {
-	CommentID int
-	UserID    int
-	PostID    int
-	ProjectID int
-	Body      string
-	Likes     int
-	CreatedAt time.Time
-	UpdatedAt *time.Time
-	DeletedAt *time.Time
-}
-
 type CommentRepository interface {
-	CreateComment(ctx context.Context, newComment Comment) error
-	GetComment(ctx context.Context, CommentID int) (*Comment, error)
-	UpdateComment(ctx context.Context, CommentID int, updatedComment Comment) error
+	CreateComment(ctx context.Context, newComment model.Comment) error
+	GetComment(ctx context.Context, CommentID int) (*model.Comment, error)
+	UpdateComment(ctx context.Context, CommentID int, updatedComment model.Comment) error
 	DeleteComment(ctx context.Context, CommentID int) error
 }

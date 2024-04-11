@@ -5,6 +5,8 @@ import (
 	"database/sql" // SQL database interaction functionality.
 	"fmt"          // Package for formatted I/O operations.
 	"time"         // Package for time-related operations.
+
+	"github.com/charlieolinsky/my-blog/internal/model"
 )
 
 // represents a repository for managing user data, encapsulating database interactions.
@@ -18,7 +20,7 @@ func NewUserRepository(db *sql.DB) UserRepository {
 }
 
 // CreateUser inserts a new user into the database with the provided user information.
-func (r *userRepository) CreateUser(ctx context.Context, user User) error {
+func (r *userRepository) CreateUser(ctx context.Context, user model.User) error {
 	currentTime := time.Now().UTC() // Capture the current time in UTC for created_at and updated_at fields.
 
 	// SQL query to insert a new user record. Note: Passing nil for deleted_at to indicate the user is active and for updated_at to indicate a user has never been edited.
@@ -28,8 +30,8 @@ func (r *userRepository) CreateUser(ctx context.Context, user User) error {
 }
 
 // GetUser retrieves a user by their ID, including users marked as deleted.
-func (r *userRepository) GetUser(ctx context.Context, UserID int) (*User, error) {
-	var user User // Variable to hold the retrieved user data.
+func (r *userRepository) GetUser(ctx context.Context, UserID int) (*model.User, error) {
+	var user model.User // Variable to hold the retrieved user data.
 
 	// SQL query to select a user by their ID. Does NOT exclude deleted users as deleted_at is also selected.
 	query := "SELECT user_id, role, email, password, first_name, last_name, profilePictureUrl, created_at, updated_at, deleted_at FROM users WHERE user_id=?"
@@ -45,7 +47,7 @@ func (r *userRepository) GetUser(ctx context.Context, UserID int) (*User, error)
 }
 
 // UpdateUser modifies an existing user's information based on the provided new user data, excluding soft-deleted users.
-func (r *userRepository) UpdateUser(ctx context.Context, UserID int, newUser User) error {
+func (r *userRepository) UpdateUser(ctx context.Context, UserID int, newUser model.User) error {
 	currentTime := time.Now().UTC() // Current UTC time for the updated_at field.
 	// SQL query to update a user's information, excluding rows where deleted_at is not NULL.
 	query := "UPDATE users SET role = ?, email = ?, password = ?, first_name = ?, last_name = ?, profilePictureUrl = ?, updated_at = ? WHERE user_id = ? AND deleted_at IS NULL"

@@ -1,6 +1,6 @@
 /repo
 
-provides a clean abstraction over your database interactions.
+provides a clean abstraction over database interactions.
 used to implement the interfaces defined in /model containing the logic for crud in db. 
 
 Ex:

@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"fmt"
 	"time"
+
+	"github.com/charlieolinsky/my-blog/internal/model"
 )
 
 type postRepository struct {
@@ -16,15 +18,15 @@ func NewPostRepository(db *sql.DB) PostRepository {
 }
 
 // CreatePost inserts a new post into the database.
-func (r *postRepository) CreatePost(ctx context.Context, newPost Post) error {
+func (r *postRepository) CreatePost(ctx context.Context, newPost model.Post) error {
 	query := "INSERT INTO posts (user_id, project_id, title, body, likes, created_at, updated_at, deleted_at) VALUES (?, ?, ?, ?, ?, ?, NULL, NULL)"
 	_, err := r.db.ExecContext(ctx, query, newPost.UserID, newPost.ProjectID, newPost.Title, newPost.Body, newPost.Likes, time.Now().UTC())
 	return err
 }
 
 // GetPost retrieves a post by its ID, excluding soft-deleted posts.
-func (r *postRepository) GetPost(ctx context.Context, PostID int) (*Post, error) {
-	var post Post
+func (r *postRepository) GetPost(ctx context.Context, PostID int) (*model.Post, error) {
+	var post model.Post
 	query := "SELECT post_id, user_id, project_id, title, body, likes, created_at, updated_at FROM posts WHERE post_id=? AND deleted_at IS NULL"
 	err := r.db.QueryRowContext(ctx, query, PostID).Scan(&post.PostID, &post.UserID, &post.ProjectID, &post.Title, &post.Body, &post.Likes, &post.CreatedAt, &post.UpdatedAt)
 
@@ -38,7 +40,7 @@ func (r *postRepository) GetPost(ctx context.Context, PostID int) (*Post, error)
 }
 
 // UpdatePost modifies an existing post's details.
-func (r *postRepository) UpdatePost(ctx context.Context, PostID int, updatedPost Post) error {
+func (r *postRepository) UpdatePost(ctx context.Context, PostID int, updatedPost model.Post) error {
 	query := "UPDATE posts SET title=?, body=?, likes=?, updated_at=? WHERE post_id=? AND deleted_at IS NULL"
 	_, err := r.db.ExecContext(ctx, query, updatedPost.Title, updatedPost.Body, updatedPost.Likes, time.Now().UTC(), PostID)
 

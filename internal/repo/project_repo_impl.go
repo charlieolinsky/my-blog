@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"fmt"
 	"time"
+
+	"github.com/charlieolinsky/my-blog/internal/model"
 )
 
 // projectRepository manages project-related database operations.
@@ -18,15 +20,15 @@ func NewProjectRepository(db *sql.DB) ProjectRepository {
 }
 
 // CreateProject adds a new project to the database.
-func (r *projectRepository) CreateProject(ctx context.Context, newProject Project) error {
+func (r *projectRepository) CreateProject(ctx context.Context, newProject model.Project) error {
 	query := "INSERT INTO projects (user_id, title, body, created_at, updated_at) VALUES (?, ?, ?, ?, NULL)"
 	_, err := r.db.ExecContext(ctx, query, newProject.UserId, newProject.Title, newProject.Body, time.Now().UTC())
 	return err
 }
 
 // GetProject fetches a project by ID, excluding deleted projects.
-func (r *projectRepository) GetProject(ctx context.Context, projectID int) (*Project, error) {
-	var project Project
+func (r *projectRepository) GetProject(ctx context.Context, projectID int) (*model.Project, error) {
+	var project model.Project
 	query := "SELECT project_id, user_id, title, body, created_at, updated_at FROM projects WHERE project_id=? AND deleted_at IS NULL"
 	err := r.db.QueryRowContext(ctx, query, projectID).Scan(&project.ProjectId, &project.UserId, &project.Title, &project.Body, &project.CreatedAt, &project.UpdatedAt)
 
@@ -40,7 +42,7 @@ func (r *projectRepository) GetProject(ctx context.Context, projectID int) (*Pro
 }
 
 // UpdateProject modifies an existing project, excluding deleted ones.
-func (r *projectRepository) UpdateProject(ctx context.Context, projectID int, updatedProject Project) error {
+func (r *projectRepository) UpdateProject(ctx context.Context, projectID int, updatedProject model.Project) error {
 	query := "UPDATE projects SET title=?, body=?, updated_at=? WHERE project_id=? AND deleted_at IS NULL"
 	res, err := r.db.ExecContext(ctx, query, updatedProject.Title, updatedProject.Body, time.Now().UTC(), projectID)
 

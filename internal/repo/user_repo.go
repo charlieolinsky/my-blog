@@ -2,33 +2,21 @@ package repo
 
 import (
 	"context"
-	"time"
-)
 
-type User struct {
-	UserID            int
-	Role              string
-	Email             string
-	Password          string
-	FirstName         string
-	LastName          string
-	ProfilePictureUrl string
-	CreatedAt         time.Time
-	UpdatedAt         *time.Time
-	DeletedAt         *time.Time
-}
+	"github.com/charlieolinsky/my-blog/internal/model"
+)
 
 // Define all methods related to users
 type UserRepository interface {
 
 	//Create User
-	CreateUser(ctx context.Context, user User) error
+	CreateUser(ctx context.Context, user model.User) error
 
 	//Read/Get User
-	GetUser(ctx context.Context, UserID int) (*User, error)
+	GetUser(ctx context.Context, UserID int) (*model.User, error)
 
 	//Update User
-	UpdateUser(ctx context.Context, UserID int, newUser User) error
+	UpdateUser(ctx context.Context, UserID int, newUser model.User) error
 
 	//Delete User
 	DeleteUser(ctx context.Context, UserID int) error
