@@ -1,5 +1,8 @@
 /repo
 
+[table]_repo.go : Creates a repository of functions for each table
+[table]_repo_impl.go : Implements those repository functions and allows callers to create their own repo instances. 
+
 provides a clean abstraction over database interactions.
 used to implement the interfaces defined in /model containing the logic for crud in db. 
 

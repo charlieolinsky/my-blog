@@ -25,7 +25,7 @@ func (r *userRepository) CreateUser(ctx context.Context, user model.User) error 
 
 	// SQL query to insert a new user record. Note: Passing nil for deleted_at to indicate the user is active and for updated_at to indicate a user has never been edited.
 	query := "INSERT INTO users (role, email, password, first_name, last_name, profilePictureUrl, created_at, updated_at, deleted_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-	_, err := r.db.ExecContext(ctx, query, user.Role, user.Email, user.Password, user.FirstName, user.LastName, user.ProfilePictureUrl, currentTime, nil, nil)
+	_, err := r.db.ExecContext(ctx, query, user.Role, user.Email, user.Password, user.FirstName, user.LastName, user.ProfilePictureUrl, currentTime, currentTime, nil)
 	return err // Return any error encountered during execution.
 }
 
@@ -39,11 +39,25 @@ func (r *userRepository) GetUser(ctx context.Context, UserID int) (*model.User, 
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, fmt.Errorf("GetUser Error: No user was found with ID: %d", UserID) // Specific error for not finding a user.
+			return nil, fmt.Errorf("no user was found with ID: %d", UserID) // Specific error for not finding a user.
 		}
 		return nil, err // Return other errors directly.
 	}
 	return &user, nil // Return the found user.
+}
+func (r *userRepository) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
+	var user model.User
+
+	query := "SELECT user_id, role, email, password, first_name, last_name, profilePictureUrl, created_at, updated_at, deleted_at FROM users WHERE email=? AND deleted_at IS NULL"
+	err := r.db.QueryRowContext(ctx, query, email).Scan(&user.UserID, &user.Role, &user.Email, &user.Password, &user.FirstName, &user.LastName, &user.ProfilePictureUrl, &user.CreatedAt, &user.UpdatedAt, &user.DeletedAt)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("no user was found with email: %s", email) //Specific error for not finding a user
+		}
+		return nil, err //Return other errors directly
+	}
+	return &user, nil
 }
 
 // UpdateUser modifies an existing user's information based on the provided new user data, excluding soft-deleted users.
