@@ -45,6 +45,35 @@ func (r *userRepository) GetUser(ctx context.Context, UserID int) (*model.User, 
 	}
 	return &user, nil // Return the found user.
 }
+func (r *userRepository) GetAllUsers(ctx context.Context) ([]model.User, error) {
+	var users []model.User // Slice to hold all users retrieved from the database.
+
+	// SQL query to select all users, excluding deleted users and sensitive data like passwords.
+	query := "SELECT user_id, role, email, first_name, last_name, profilePictureUrl, created_at, updated_at FROM users WHERE deleted_at IS NULL"
+	rows, err := r.db.QueryContext(ctx, query) // Execute the query and retrieve a set of rows.
+	if err != nil {
+		return nil, fmt.Errorf("failed to query users: %w", err) // Handle SQL execution errors
+	}
+	defer rows.Close() // Ensure the rows are closed when the function returns.
+
+	// Iterate over each row in the result set.
+	for rows.Next() {
+		var user model.User // Variable to hold the user data for each row.
+		// Scan the current row's data into the user struct, excluding the password.
+		err := rows.Scan(&user.UserID, &user.Role, &user.Email, &user.FirstName, &user.LastName, &user.ProfilePictureUrl, &user.CreatedAt, &user.UpdatedAt)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan user: %w", err) // Handle errors scanning row data with wrapped error.
+		}
+		users = append(users, user) // Append the user to the slice of users.
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating rows: %w", err) // Check for errors after finishing the iteration.
+	}
+
+	return users, nil // Return all users found in the database.
+}
+
 func (r *userRepository) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
 	var user model.User
 

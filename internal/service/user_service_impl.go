@@ -74,6 +74,17 @@ func (r *userService) GetUser(ctx context.Context, UserID int) (*model.User, err
 
 	return user, nil
 }
+func (r *userService) GetAllUsers(ctx context.Context) ([]model.User, error) {
+	//call the repository
+	users, err := r.userRepo.GetAllUsers(ctx)
+
+	//Handle Errors
+	if err != nil {
+		return nil, fmt.Errorf("failed to get all users: %w", err)
+	}
+
+	return users, nil
+}
 func (r *userService) UpdateUser(ctx context.Context, UserID int, updatedUser model.User) error {
 	//Validate Input
 	if UserID <= 0 {
