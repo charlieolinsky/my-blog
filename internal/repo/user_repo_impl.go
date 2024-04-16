@@ -30,7 +30,7 @@ func (r *userRepository) CreateUser(ctx context.Context, user model.User) error 
 }
 
 // GetUser retrieves a user by their ID, including users marked as deleted.
-func (r *userRepository) GetUser(ctx context.Context, UserID int) (*model.User, error) {
+func (r *userRepository) GetUserByID(ctx context.Context, UserID int) (*model.User, error) {
 	var user model.User // Variable to hold the retrieved user data.
 
 	// SQL query to select a user by their ID. Does NOT exclude deleted users as deleted_at is also selected.

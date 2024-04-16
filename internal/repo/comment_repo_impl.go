@@ -25,7 +25,7 @@ func (r *commentRepository) CreateComment(ctx context.Context, newComment model.
 }
 
 // GetComment retrieves a comment by its ID, including soft-deleted comments.
-func (r *commentRepository) GetComment(ctx context.Context, CommentID int) (*model.Comment, error) {
+func (r *commentRepository) GetCommentByID(ctx context.Context, CommentID int) (*model.Comment, error) {
 	var comment model.Comment
 	query := "SELECT comment_id, user_id, post_id, body, likes, created_at, updated_at FROM comments WHERE comment_id=?"
 	err := r.db.QueryRowContext(ctx, query, CommentID).Scan(&comment.CommentID, &comment.UserID, &comment.PostID, &comment.Body, &comment.Likes, &comment.CreatedAt, &comment.UpdatedAt)
@@ -37,6 +37,32 @@ func (r *commentRepository) GetComment(ctx context.Context, CommentID int) (*mod
 		return nil, err
 	}
 	return &comment, nil
+}
+
+// GetAllComments retrieves all comments, including soft-deleted comments.
+func (r *commentRepository) GetAllComments(ctx context.Context) ([]model.Comment, error) {
+	var comments []model.Comment
+	query := "SELECT comment_id, user_id, post_id, body, likes, created_at, updated_at FROM comments"
+	rows, err := r.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to retrieve comments: %w", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var comment model.Comment
+		err = rows.Scan(&comment.CommentID, &comment.UserID, &comment.PostID, &comment.Body, &comment.Likes, &comment.CreatedAt, &comment.UpdatedAt)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan comment: %w", err)
+		}
+		comments = append(comments, comment)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("failed to retrieve comments: %w", err)
+	}
+
+	return comments, nil
 }
 
 // UpdateComment modifies an existing comment's details. Deleted comments may not be updated.

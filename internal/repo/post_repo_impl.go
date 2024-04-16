@@ -25,7 +25,7 @@ func (r *postRepository) CreatePost(ctx context.Context, newPost model.Post) err
 }
 
 // GetPost retrieves a post by its ID, excluding soft-deleted posts.
-func (r *postRepository) GetPost(ctx context.Context, PostID int) (*model.Post, error) {
+func (r *postRepository) GetPostByID(ctx context.Context, PostID int) (*model.Post, error) {
 	var post model.Post
 	query := "SELECT post_id, user_id, project_id, title, body, likes, created_at, updated_at FROM posts WHERE post_id=? AND deleted_at IS NULL"
 	err := r.db.QueryRowContext(ctx, query, PostID).Scan(&post.PostID, &post.UserID, &post.ProjectID, &post.Title, &post.Body, &post.Likes, &post.CreatedAt, &post.UpdatedAt)
@@ -37,6 +37,31 @@ func (r *postRepository) GetPost(ctx context.Context, PostID int) (*model.Post, 
 		return nil, err
 	}
 	return &post, nil
+}
+
+// GetAllPosts retrieves all posts, excluding soft-deleted posts.
+func (r *postRepository) GetAllPosts(ctx context.Context) ([]model.Post, error) {
+	var posts []model.Post
+	query := "SELECT post_id, user_id, project_id, title, body, likes, created_at, updated_at FROM posts WHERE deleted_at IS NULL"
+	rows, err := r.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to retrieve posts: %w", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var post model.Post
+		err = rows.Scan(&post.PostID, &post.UserID, &post.ProjectID, &post.Title, &post.Body, &post.Likes, &post.CreatedAt, &post.UpdatedAt)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan post: %w", err)
+		}
+		posts = append(posts, post)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error reading posts: %w", err)
+	}
+	return posts, nil
 }
 
 // UpdatePost modifies an existing post's details.

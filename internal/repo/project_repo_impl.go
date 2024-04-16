@@ -40,6 +40,32 @@ func (r *projectRepository) GetProject(ctx context.Context, projectID int) (*mod
 	}
 	return &project, nil
 }
+func (r *projectRepository) GetAllProjects(ctx context.Context) ([]model.Project, error) {
+	var projects []model.Project
+
+	query := "SELECT project_id, user_id, title, body, created_at, updated_at FROM projects WHERE deleted_at IS NULL"
+	rows, err := r.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query projects: %w", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var project model.Project
+
+		err = rows.Scan(&project.ProjectId, &project.UserId, &project.Title, &project.Body, &project.CreatedAt, &project.UpdatedAt)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan project: %w", err)
+		}
+		projects = append(projects, project)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("error during rows iteration: %w", err)
+	}
+
+	return projects, nil
+}
 
 // UpdateProject modifies an existing project, excluding deleted ones.
 func (r *projectRepository) UpdateProject(ctx context.Context, projectID int, updatedProject model.Project) error {
