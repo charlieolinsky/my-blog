@@ -1,0 +1,11 @@
+POST http://localhost:8080/createUser
+Content-Type: application/json
+
+{
+    "role": "user",
+    "email": "johnd2@gmail.com",
+    "password": "password",
+    "firstName": "John",
+    "lastName": "Doe",
+    "profilePictureURL": "https://www.google.com" 
+}

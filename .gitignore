@@ -32,6 +32,7 @@ go.work
 ### General ###
 .vscode
 /data/*.db
+/tmp
 
 #dev queries
 /pkg/sqlite/queries.txt 

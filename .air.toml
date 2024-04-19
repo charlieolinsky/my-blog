@@ -1,0 +1,40 @@
+# The root directory of your project
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  # Command to build your project
+  cmd = "go build -o ./tmp/main.exe ./cmd/main.go"
+  
+  # Binary to execute after build
+  bin = "tmp/main.exe"
+  
+  # Include file extensions that trigger a rebuild
+  include_ext = ["go", "tmpl", "tpl", "html"]
+  
+  # Exclude directories from watching
+  exclude_dir = ["tmp", "vendor", "assets"]
+  
+  # Delay in milliseconds before rebuild and restart after file changes are detected
+  delay = 1000
+  
+  # Stop running application on error
+  stop_on_error = true
+
+[log]
+  # Enable timestamp in logging
+  time = true
+
+[color]
+  # Color settings for different parts of the output
+  main = "magenta"
+  watcher = "cyan"
+  build = "yellow"
+
+[screen]
+  # Clear the screen before each build
+  clear_on_rebuild = true
+
+[misc]
+  # Delete tmp directory on exit
+  clean_on_exit = true

@@ -82,7 +82,7 @@ func (r *userRepository) GetUserByEmail(ctx context.Context, email string) (*mod
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, fmt.Errorf("no user was found with email: %s", email) //Specific error for not finding a user
+			return nil, nil
 		}
 		return nil, err //Return other errors directly
 	}
