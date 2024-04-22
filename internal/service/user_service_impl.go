@@ -58,7 +58,7 @@ func (s *userService) CreateUser(ctx context.Context, newUser model.User) error 
 	}
 	return nil
 }
-func (s *userService) GetUser(ctx context.Context, UserID int) (*model.User, error) {
+func (s *userService) GetUserByID(ctx context.Context, UserID int) (*model.User, error) {
 	//Validate Input
 	if UserID <= 0 {
 		return nil, fmt.Errorf("invalid user ID: %d", UserID)
@@ -73,6 +73,24 @@ func (s *userService) GetUser(ctx context.Context, UserID int) (*model.User, err
 	}
 
 	return user, nil
+}
+func (s *userService) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
+	//Email cannot be blank
+	if email == "" {
+		return nil, fmt.Errorf("an email is required")
+	}
+	//Email must be of a valid format
+	if !isValidEmail(email) {
+		return nil, fmt.Errorf("invalid email format")
+	}
+
+	//Call repo
+	user, err := s.userRepo.GetUserByEmail(ctx, email)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user: %w", err)
+	}
+	return user, nil
+
 }
 func (s *userService) GetAllUsers(ctx context.Context) ([]model.User, error) {
 	//call the repository

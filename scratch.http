@@ -1,11 +1,16 @@
+
+GET http://localhost:8080/getUser/1
+
+###
 POST http://localhost:8080/createUser
 Content-Type: application/json
 
 {
     "role": "user",
-    "email": "johnd2@gmail.com",
+    "email": "johnd5@gmail.com",
     "password": "password",
     "firstName": "John",
     "lastName": "Doe",
     "profilePictureURL": "https://www.google.com" 
 }
+

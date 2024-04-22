@@ -35,13 +35,17 @@ func main() {
 	}
 	defer db.Close()
 
+	//Setup Go's ServeMux as Router
+	mux := http.NewServeMux()
+
 	//Setup HTTP server routes
 	userHandler := handler.NewUserHandler(service.NewUserService(repo.NewUserRepository(db)))
-	http.HandleFunc("/createUser", userHandler.CreateUser)
+	mux.HandleFunc("/createUser", userHandler.CreateUser)
+	mux.HandleFunc("/getUser/{id}", userHandler.GetUserByID)
 
 	//Start HTTP Server
 	log.Printf("server running on http://localhost%s", PORT)
-	if err := http.ListenAndServe(PORT, nil); err != nil {
+	if err := http.ListenAndServe(PORT, mux); err != nil {
 		log.Fatalf("error starting server: %v", err)
 	}
 }
