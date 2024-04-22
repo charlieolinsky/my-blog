@@ -3,7 +3,7 @@ package main
 /*
 	Entry Point for App
 	NOTE: Run from Project root using:
-		go run ./cmd/main.go
+	$	air
 */
 
 import (
