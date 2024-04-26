@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/charlieolinsky/my-blog/internal/common"
 	"github.com/charlieolinsky/my-blog/internal/model"
 	"github.com/charlieolinsky/my-blog/internal/service"
 )
@@ -39,6 +40,9 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *UserHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
+	//Set common headers
+	w.Header().Set("Content-Type", "application/json")
+
 	//Parse request URL
 	userIDStr := r.PathValue("id")
 
@@ -66,7 +70,43 @@ func (h *UserHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Response Success
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(user); err != nil {
+		http.Error(w, fmt.Sprintf("Error encoding response: %v", err), http.StatusInternalServerError)
+	}
+
+}
+func (h *UserHandler) GetUserByEmail(w http.ResponseWriter, r *http.Request) {
+	//Set common headers
 	w.Header().Set("Content-Type", "application/json")
+
+	//Parse request URL
+	userEmail := r.PathValue("email")
+
+	//Ensure a userID was provided
+	if userEmail == "" {
+		http.Error(w, "an email is required", http.StatusBadRequest)
+		return
+	}
+
+	//Ensure email is valid
+	if !common.IsValidEmail(userEmail) {
+		http.Error(w, "invalid email format", http.StatusBadRequest)
+		return
+	}
+
+	//Execute Business Logic
+	user, err := h.userService.GetUserByEmail(r.Context(), userEmail)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			http.Error(w, "User not found", http.StatusNotFound)
+		} else {
+			http.Error(w, fmt.Sprintf("Error getting user: %v", err), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	//Response Success
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(user); err != nil {
 		http.Error(w, fmt.Sprintf("Error encoding response: %v", err), http.StatusInternalServerError)

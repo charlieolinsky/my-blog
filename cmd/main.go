@@ -41,7 +41,8 @@ func main() {
 	//Setup HTTP server routes
 	userHandler := handler.NewUserHandler(service.NewUserService(repo.NewUserRepository(db)))
 	mux.HandleFunc("/createUser", userHandler.CreateUser)
-	mux.HandleFunc("/getUser/{id}", userHandler.GetUserByID)
+	mux.HandleFunc("/getUserById/{id}", userHandler.GetUserByID)
+	mux.HandleFunc("/getUserByEmail/{email}", userHandler.GetUserByEmail)
 
 	//Start HTTP Server
 	log.Printf("server running on http://localhost%s", PORT)
