@@ -5,11 +5,10 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"net/mail"
 
+	"github.com/charlieolinsky/my-blog/internal/common"
 	"github.com/charlieolinsky/my-blog/internal/model"
 	"github.com/charlieolinsky/my-blog/internal/repo"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type userService struct {
@@ -29,7 +28,7 @@ func (s *userService) CreateUser(ctx context.Context, newUser model.User) error 
 		return fmt.Errorf("an email is required")
 	}
 	//Email must follow standard conventions
-	if !isValidEmail(newUser.Email) {
+	if !common.IsValidEmail(newUser.Email) {
 		return fmt.Errorf("invalid email format")
 	}
 	//Email cannot already be in use
@@ -45,7 +44,7 @@ func (s *userService) CreateUser(ctx context.Context, newUser model.User) error 
 	}
 
 	//Ensure password is hashed
-	hashedPassword, err := hashPassword(newUser.Password)
+	hashedPassword, err := common.HashPassword(newUser.Password)
 	if err != nil {
 		return fmt.Errorf("password could not be hashed")
 	}
@@ -80,7 +79,7 @@ func (s *userService) GetUserByEmail(ctx context.Context, email string) (*model.
 		return nil, fmt.Errorf("an email is required")
 	}
 	//Email must be of a valid format
-	if !isValidEmail(email) {
+	if !common.IsValidEmail(email) {
 		return nil, fmt.Errorf("invalid email format")
 	}
 
@@ -129,18 +128,4 @@ func (s *userService) DeleteUser(ctx context.Context, UserID int) error {
 		return fmt.Errorf("failed to delete user: %w", err)
 	}
 	return nil
-}
-
-/* Utility Functions  */
-
-// Check if a given email is valid (using Go's standard library)
-func isValidEmail(email string) bool {
-	_, err := mail.ParseAddress(email)
-	return err == nil
-}
-
-// Hash a given password using bcrypt
-func hashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	return string(bytes), err
 }
